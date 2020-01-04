@@ -7,7 +7,7 @@ using namespace std;
 #pragma once
 #define MAX_WORKER 50
 
-class Jung		//정규직 사원.
+class Jung		//pernament worker 
 {
 private:
 
