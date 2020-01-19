@@ -1,6 +1,4 @@
-#work hard!
-operator overloading
-oop example
-algorithm
+welcome to my repository
+
 
 
