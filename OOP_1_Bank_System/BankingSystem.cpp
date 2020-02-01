@@ -15,12 +15,12 @@ using namespace std;
 class Account
 {
 private:
-    int accountnum;
+    int account_id;
     int money;
     char *name;
 
 public:
-    Account(int ini_money, int number, char *in_name) : money(ini_money), accountnum(number)
+    Account(int ini_money, int number, char *in_name) : money(ini_money), account_id(number)
     {
         int len = strlen(in_name);
         name = new char[len + 1];
@@ -30,35 +30,46 @@ public:
     {
         return money;
     }
-    int Getaccountnum() const
+    int GetaccountId() const
     {
-        return accountnum;
+        return account_id;
     }
-    int Deposit(int p_money)
+    int Deposit(const int p_money)
     {
-        money += p_money;
-        cout << "balance" << Getmoney();
+        this->money += p_money;
+        cout << "balance" << Getmoney() << endl;
     }
 
-    int Withdraw(int p_money)
+    bool Withdraw(const int p_money)
     {
-        money -= p_money;
-        cout << "balance" << Getmoney();
+        if (p_money > this->money)
+        {
+            cout << "not enough the money!" << endl;
+            return false;
+        }
+        else
+        {
+            this->money -= p_money;
+            cout << "balance" << Getmoney() << endl;
+            return true;
+        }
     }
 
     void ShowInfo() const
     {
-        cout << "customer name:" << name<<endl;
-        cout << "account number:" << Getaccountnum()<<endl;
-        cout << "balance:" << Getmoney()<<endl;
+        cout << "customer name:" << name << endl;
+        cout << "account number:" << GetaccountId() << endl;
+        cout << "balance:" << Getmoney() << endl;
     }
     ~Account()
     {
         delete[] name;
     }
 };
+
 Account *customer[MAX_CUSTOMER];
 int account_index = 0;
+
 bool YesOrNo(const char answer)
 {
     if (answer == 'Y')
@@ -112,6 +123,52 @@ void ShowAllInfo()
     for (int i = 0; i < account_index; i++)
         customer[i]->ShowInfo();
 }
+
+void DepositMoney()
+{
+    int id;
+    int deposit_money;
+    cout << "write your AccountID:";
+    cin >> id;
+    for (int i = 0; i < account_index; i++)
+    {
+        if (id == customer[i]->GetaccountId())
+        {
+            cout << "write deposit amount:";
+            cin >> deposit_money;
+            customer[i]->Deposit(deposit_money);
+            cout << "deposit success!" << endl;
+        }
+        else
+        {
+            cout << "fail search accountID" << endl;
+        }
+    }
+}
+
+int WithdrawMoney()
+{
+    int id;
+    int withdraw_money;
+    cout << "write your Account ID:";
+    cin >> id;
+    for (int i = 0; i < account_index; i++)
+    {
+        if (id == customer[i]->GetaccountId())
+        {
+            cout << "write withdraw amount:";
+            cin >> withdraw_money;
+            if (customer[i]->Withdraw(withdraw_money) == true)
+                return 0;
+            else
+                continue;
+        }
+        else
+        {
+            cout << "fail search accountID" << endl;
+        }
+    }
+}
 int main()
 {
     int menu;
@@ -136,8 +193,10 @@ int main()
             }
             break;
         case DEPO:
+            DepositMoney();
             break;
         case WITH:
+            WithdrawMoney();
             break;
         case SHOW:
             ShowAllInfo();
