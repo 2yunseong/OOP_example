@@ -26,6 +26,12 @@ public:
         name = new char[len + 1];
         strcpy(name, in_name);
     }
+    Account(const Account &copy) : account_id(copy.account_id), money(copy.money)
+    {
+        int copy_len = strlen(copy.name);
+        this->name = new char[copy_len + 1];
+        strcpy(this->name, copy.name);
+    }
     int Getmoney() const
     {
         return money;
@@ -37,7 +43,7 @@ public:
     int Deposit(const int p_money)
     {
         this->money += p_money;
-        cout << "balance" << Getmoney() << endl;
+        cout << "balance:" << Getmoney() << endl;
     }
 
     bool Withdraw(const int p_money)
@@ -57,7 +63,7 @@ public:
 
     void ShowInfo() const
     {
-        cout << "customer name:" << name << endl;
+        cout << "customer name:" << this->name << endl;
         cout << "account number:" << GetaccountId() << endl;
         cout << "balance:" << Getmoney() << endl;
     }
@@ -67,139 +73,164 @@ public:
     }
 };
 
-Account *customer[MAX_CUSTOMER];
-int account_index = 0;
+class AccountHandler
+{
+private:
+    Account *customer[MAX_CUSTOMER];
+    int account_index;
 
-bool YesOrNo(const char answer)
-{
-    if (answer == 'Y')
-        return true;
-    if (answer == 'F')
-        return false;
-}
-void MakeNewAccount()
-{
-    char t_name[MAX_NAME];
-    int first_deposit;
-    int t_accountnumber;
-    char c_answer;
-    cout << "write your first name:";
-    cin >> t_name;
-    cout << "set account number:";
-    cin >> t_accountnumber;
-    cout << "have you deposit money? (Y/F)";
-    cin >> c_answer;
-    if (YesOrNo(c_answer) == true)
+public:
+    AccountHandler() : account_index(0) {}
+    void ShowMenu()
     {
-        cout << "write amount:";
-        cin >> first_deposit;
-        customer[account_index++] = new Account(first_deposit, t_accountnumber, t_name);
-        cout << "make success!" << endl;
+        cout << "---- menu ----" << endl;
+        cout << "1.new account" << endl;
+        cout << "2.deposit" << endl;
+        cout << "3.withdraw" << endl;
+        cout << "4.Show All infomation" << endl;
+        cout << "0. exit" << endl;
+        cout << "--------------" << endl;
     }
-    else if (YesOrNo(c_answer) == false)
+    void MakeNewAccount()
     {
-        first_deposit = 0;
-        customer[account_index++] = new Account(first_deposit, t_accountnumber, t_name);
-        cout << "make success!" << endl;
-    }
-    else
-    {
-        cout << "Fail access!" << endl;
-    }
-}
-
-void ShowMenu()
-{
-    cout << "--- menu ---" << endl;
-    cout << "1.new account" << endl;
-    cout << "2.deposit" << endl;
-    cout << "3.withdraw" << endl;
-    cout << "4.Show All infomation" << endl;
-    cout << "0. exit" << endl;
-}
-
-void ShowAllInfo()
-{
-    for (int i = 0; i < account_index; i++)
-        customer[i]->ShowInfo();
-}
-
-void DepositMoney()
-{
-    int id;
-    int deposit_money;
-    cout << "write your AccountID:";
-    cin >> id;
-    for (int i = 0; i < account_index; i++)
-    {
-        if (id == customer[i]->GetaccountId())
+        char t_name[MAX_NAME];
+        int first_deposit;
+        int t_accountnumber;
+        char c_answer;
+        cout << "--------------" << endl;
+        cout << "write your first name:";
+        cin >> t_name;
+        cout << "set account number:";
+        cin >> t_accountnumber;
+        cout << "have you deposit money? (Y/F)";
+        cin >> c_answer;
+        if (YesOrNo(c_answer) == true)
         {
-            cout << "write deposit amount:";
-            cin >> deposit_money;
-            customer[i]->Deposit(deposit_money);
-            cout << "deposit success!" << endl;
+            cout << "write amount:";
+            cin >> first_deposit;
+            customer[account_index++] = new Account(first_deposit, t_accountnumber, t_name);
+            cout << "make success!" << endl;
+        }
+        else if (YesOrNo(c_answer) == false)
+        {
+            first_deposit = 0;
+            customer[account_index++] = new Account(first_deposit, t_accountnumber, t_name);
+            cout << "make success!" << endl;
         }
         else
         {
-            cout << "fail search accountID" << endl;
+            cout << "Fail access!" << endl;
         }
     }
-}
-
-int WithdrawMoney()
-{
-    int id;
-    int withdraw_money;
-    cout << "write your Account ID:";
-    cin >> id;
-    for (int i = 0; i < account_index; i++)
+    bool YesOrNo(const char answer)
     {
-        if (id == customer[i]->GetaccountId())
+        if (answer == 'Y')
+            return true;
+        else if (answer == 'F')
+            return false;
+        else
+            return false;
+    }
+    void ShowAllInfo()
+    {
+        for (int i = 0; i < account_index; i++)
+            customer[i]->ShowInfo();
+    }
+    void DepositMoney()
+    {
+        int id;
+        int deposit_money;
+        cout << "--------------" << endl;
+        cout << "write your AccountID:";
+        cin >> id;
+        for (int i = 0; i < account_index; i++)
         {
-            cout << "write withdraw amount:";
-            cin >> withdraw_money;
-            if (customer[i]->Withdraw(withdraw_money) == true)
-                return 0;
+            if (id == customer[i]->GetaccountId())
+            {
+                cout << "write deposit amount:";
+                cin >> deposit_money;
+                customer[i]->Deposit(deposit_money);
+                cout << "deposit success!" << endl;
+                break;
+            }
             else
-                continue;
-        }
-        else
-        {
-            cout << "fail search accountID" << endl;
+            {
+                cout << "fail search accountID" << endl;
+            }
         }
     }
-}
+    void WithdrawMoney()
+    {
+        int id;
+        int i;
+        int withdraw_money;
+        cout << "--------------" << endl;
+
+        cout << "write your Account ID:";
+        cin >> id;
+        for (i = 0; i < this->account_index; i++)
+        {
+            if (id == customer[i]->GetaccountId())
+            {
+                cout << "write withdraw amount:";
+                cin >> withdraw_money;
+                if (customer[i]->Withdraw(withdraw_money) == true)
+                {
+                    cout << "withdraw success!" << endl;
+                    break;
+                }
+            }
+        }
+        if (i >= this->account_index)
+        {
+            cout << "fail search accountID!" << endl;
+        }
+    }
+
+    int GetAccountIndex() const
+    {
+        return account_index;
+    }
+
+    ~AccountHandler()
+    {
+        for (int i = 0; i < account_index; i++)
+            delete customer[i];
+    }
+};
+
 int main()
 {
+    AccountHandler manager;
     int menu;
     bool running = true;
     while (running == true)
     {
-        ShowMenu();
+        manager.ShowMenu();
         cout << "select number:";
         cin >> menu;
         switch (menu)
         {
         case MAKE:
-            if (account_index > MAX_CUSTOMER)
+            if (manager.GetAccountIndex() > MAX_CUSTOMER)
             {
                 cout << "bank is full!" << endl;
                 break;
             }
             else
             {
-                MakeNewAccount();
+                manager.MakeNewAccount();
                 break;
             }
             break;
         case DEPO:
-            DepositMoney();
+            manager.DepositMoney();
             break;
         case WITH:
-            WithdrawMoney();
+            manager.WithdrawMoney();
             break;
         case SHOW:
-            ShowAllInfo();
+            manager.ShowAllInfo();
             break;
         case EXIT:
             cout << "program exit." << endl;
@@ -210,4 +241,6 @@ int main()
             break;
         }
     }
+
+    return 0;
 }
