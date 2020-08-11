@@ -102,8 +102,47 @@ cout<<"(\"abc\"+ \"de\" + \"f\" +'g')"<<endl;
 cout<<"append(\"abc\"),append(\"de\"),append(\"f\"),+\'g\'"<<endl;
 
 //3.insert() 문자열 삽입.
+//insert(index_where, const char*)
+//str을 반환한다.
 cout<<"str:"<<str<<endl;
 cout<<"str[2] insert \"ab\":"<<str.insert(2,"ab")<<endl;
+
+
+//4.replace() 문자열 대체  ->cplusplus.com 에서 다시 공부
+//replace(start_index, replace_count, const char*)
+cout<<"str:"<<str<<endl;
+cout<<"(str[2],str[3],str[4])replace \"bbb\"."<<str.replace(2,3,"bbb")<<endl;
+
+//5.erase() 부분 지우기    ->cplusplus.com 에서 다시 공부
+//erase(start_index, end_index)
+cout<<"str:"<<str<<endl;
+cout<<"erase str[2]~str[3]:"<<str.erase(2,3)<<endl;
+
+//6.clear() 전부 지우기 str.clear()
+
+//7.substr() 부분 문자 반환받기
+//substr(n) index n 의 위치부터 끝까지 문자를 반환.
+//substr(n,m) index n의 위치부터 m개의 문자 반환.
+cout<<"str:"<<str<<endl;
+cout<<"str.substr(2) (return str[2]~str[length-1]):"<<str.substr(2)<<endl;
+cout<<"str.substr(2,3) (return str[2]~str[4]):"<<str.substr(2,3);
+
+//8.find() 문자열에서 문자 찾기
+//-문자가 존재: 해당 위치 index 반환받기
+//-문자열이 존재: 문자열이 시작되는 index 반환
+//-존재하지 않는다: -1 반환abdefg
+cout<<"str:"<<str<<endl;
+cout<<"\'d\' is in index["<<str.find('d')<<']'<<endl;
+cout<<"\"ef\" is start index["<<str.find("ef")<<']'<<endl;
+cout<<"\'t\' is in index["<<(int)str.find('t')<<']'<<endl;
+cout<<"\'o\' is in index["<<(int)str.find('o')<<']'<<endl;
+
+// 왜 찾을 수 없으면 쓰레기값이 반환되는지..?
+//size_t 형이라서 그런다. int 형으로 반드시!!! 변환시켜줄 것!
+
+
+
+
 
 
 
